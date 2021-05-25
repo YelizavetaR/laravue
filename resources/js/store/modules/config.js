@@ -7,7 +7,7 @@ import * as UnsplashAPI from '@api/unsplash'
 import moment from 'moment'
 
 function reloadIfRequired(c) {
-    if(document.documentElement.lang !== c.system.locale) {
+    if (document.documentElement.lang !== c.system.locale) {
         location.reload(true)
     }
 }
@@ -49,9 +49,9 @@ const config = {
         isScreenLocked: (state) => {
             const lastActivity = store.getters['user/lastActivity']
             const locked = store.getters['user/locked']
-            if(locked) {
+            if (locked) {
                 return true
-            } else if(state.config && state.config.auth && lastActivity) {
+            } else if (state.config && state.config.auth && lastActivity) {
                 let lastActivityAfterTimeout = moment(lastActivity)
                     .add(state.config.auth.lockScreenTimeout, 'minutes')
                     .format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS)
@@ -81,11 +81,11 @@ const config = {
         },
         SET_LOADED: (state, value) => { state.loaded = value },
         SET_APP_IS_LOADING: (state, value) => { state.appIsLoading = value },
-        RESET_CONFIG: (state) => { 
+        RESET_CONFIG: (state) => {
             state.config = {}
         },
-        RESET_UI_CONFIG: (state) => { 
-            state.ui = initialUiConfig 
+        RESET_UI_CONFIG: (state) => {
+            state.ui = initialUiConfig
         },
     },
     actions: {
@@ -96,15 +96,16 @@ const config = {
 
             try {
                 const response = await ConfigAPI.get().catch(e => { throw e })
+                console.log(response, '------1------')
                 commit('ADD_CONFIG', response)
-                if(!response.failedInstall) {
-                    if(response.system) {
+                if (!response.failedInstall) {
+                    if (response.system) {
                         dispatch('SetupVars', response.system)
                     }
-                    if(response.ui) {
+                    if (response.ui) {
                         dispatch('SetUiConfig', response.ui)
                     }
-                    if(response.authenticated === true && !getters.isScreenLocked) {
+                    if (response.authenticated === true && !getters.isScreenLocked) {
                         dispatch('user/SetLastActivity', null, { root: true })
                     }
 
@@ -121,23 +122,23 @@ const config = {
         },
         SetConfig({ commit, dispatch }, configArgs) {
             commit('SET_CONFIG', configArgs)
-            if(configArgs.system) {
+            if (configArgs.system) {
                 dispatch('SetupVars', configArgs.system)
             }
-            if(configArgs.ui) {
+            if (configArgs.ui) {
                 dispatch('SetUiConfig', configArgs.ui)
             }
         },
         SetUiConfig({ commit }, configArgs) {
             commit('SET_UI_CONFIG', configArgs)
-            if(configArgs.notificationPosition) {
+            if (configArgs.notificationPosition) {
                 window.toastConfig.position = configArgs.notificationPosition
                 window.toastConfig.normal.position = configArgs.notificationPosition
                 window.toastConfig.info.position = configArgs.notificationPosition
                 window.toastConfig.success.position = configArgs.notificationPosition
                 window.toastConfig.error.position = configArgs.notificationPosition
             }
-            if(configArgs.notificationDuration) {
+            if (configArgs.notificationDuration) {
                 window.toastConfig.duration = configArgs.notificationDuration
                 window.toastConfig.normal.duration = configArgs.notificationDuration
                 window.toastConfig.info.duration = configArgs.notificationDuration
@@ -183,8 +184,8 @@ const config = {
         },
         SetupVars({ commit, state }, systemConfig) {
             const currency = systemConfig.currency
-            if(currency) {
-                if(currency.position === 'prefix') {
+            if (currency) {
+                if (currency.position === 'prefix') {
                     currency.prefix = currency.symbol
                 } else {
                     currency.suffix = currency.symbol
@@ -202,7 +203,7 @@ const config = {
             //         console.log(moment().format('LLLL')); // 'Freitag, 24. Juni 2016 01:42'
             //     })
             // }
-            
+
             commit('SET_VARS', {
                 defaultDateFormat: systemConfig.dateFormat,
                 defaultTimeFormat: systemConfig.timeFormat,

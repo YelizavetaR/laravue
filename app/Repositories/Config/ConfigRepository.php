@@ -81,19 +81,19 @@ class ConfigRepository
         }
 
         $db_config = $this->listAll();
-
+        
         if (! \Auth::check()) {
             return $this->getPublicConfig($db_config, false);
         } else if (config('config.auth.two_factor_security') && session()->exists('2fa')) {
             return $this->getPublicConfig($db_config, true, true);
         }
-
         $app_config = $this->getAppConfig($db_config);
         $app_config = $this->maskPrivateConfig($app_config);
         $app_config['authenticated'] = true;
         return $this->addGeneralConfig($app_config);
     }
 
+    
     /**
      * Get public config
      *

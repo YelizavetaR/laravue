@@ -120,4 +120,4 @@ __webpack_require__.r(__webpack_exports__);
 /***/ })
 
 }]);
-//# sourceMappingURL=terms-and-conditions.js.map?id=8c78fe9a3f38d8212eff
+//# sourceMappingURL=terms-and-conditions.js.map?id=8b8cce9fd28a4abd6a0c

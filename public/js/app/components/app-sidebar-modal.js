@@ -441,4 +441,4 @@ var EventBus = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
 /***/ })
 
 }]);
-//# sourceMappingURL=app-sidebar-modal.js.map?id=52d8528ac23f07bb4895
+//# sourceMappingURL=app-sidebar-modal.js.map?id=529f85ad41b1c0f4536f

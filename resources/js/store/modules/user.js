@@ -94,7 +94,7 @@ const user = {
         SET_USERNAME: (state, username = '') => { state.username = username },
         SET_STATUS: (state, status = '') => { state.status = status },
         SET_PROFILE: (state, profile = {}) => { state.profile = profile },
-        SET_PROFILE_DETAILS: (state, profile = {}) => { 
+        SET_PROFILE_DETAILS: (state, profile = {}) => {
             state.name = profile.name || null
             state.avatar = profile.avatar || null
             state.gender = profile.gender || null
@@ -109,34 +109,34 @@ const user = {
         SET_PREFERENCES: (state, preferences = {}) => { state.preferences = preferences },
         SET_TWO_FACTOR_SET: (state, twoFactorSet) => { state.twoFactorSet = twoFactorSet },
         SET_LAST_ACTIVITY: (state, timestamp) => { state.lastActivity = timestamp },
-        SET_LOCKED: (state, isLocked) => { 
-            state.locked = isLocked 
-            state.lockin = null 
+        SET_LOCKED: (state, isLocked) => {
+            state.locked = isLocked
+            state.lockin = null
         },
-        SET_LOCKIN: (state, lockin) => { 
-            state.lockin = lockin 
+        SET_LOCKIN: (state, lockin) => {
+            state.lockin = lockin
         },
-        SET_LIVE_USERS: (state, users) => { 
-            state.liveUsers = users 
+        SET_LIVE_USERS: (state, users) => {
+            state.liveUsers = users
         },
-        ADD_LIVE_USER: (state, user) => { 
+        ADD_LIVE_USER: (state, user) => {
             state.liveUsers.push(user)
         },
-        REMOVE_LIVE_USER: (state, user) => { 
+        REMOVE_LIVE_USER: (state, user) => {
             let liveUserIndex = state.liveUsers.findIndex(u => u.uuid === user.uuid)
-            if(liveUserIndex !== -1) {
+            if (liveUserIndex !== -1) {
                 state.liveUsers = state.liveUsers.filter(u => u.uuid !== user.uuid)
             }
         },
-        UPDATE_LIVE_USER: (state, user) => { 
+        UPDATE_LIVE_USER: (state, user) => {
             const existingIndex = state.liveUsers.findIndex(u => u.uuid === user.uuid)
-            if(existingIndex !== -1) {
-                if(user.hasOwnProperty('timerToFalse') && user.timerToFalse) {
+            if (existingIndex !== -1) {
+                if (user.hasOwnProperty('timerToFalse') && user.timerToFalse) {
                     user.timerToFalse = setTimeout(() => {
                         state.liveUsers[existingIndex]['status'] = false
                     }, user.timerToFalse)
                 } else {
-                    if(state.liveUsers[existingIndex].timerToFalse) {
+                    if (state.liveUsers[existingIndex].timerToFalse) {
                         clearTimeout(state.liveUsers[existingIndex].timerToFalse)
                     }
                     state.liveUsers[existingIndex].timerToFalse = null
@@ -145,7 +145,7 @@ const user = {
                 user.objForEach((value, key) => state.liveUsers[existingIndex][key] = value)
             }
         },
-        RESET_LIVE_USERS: (state) => { 
+        RESET_LIVE_USERS: (state) => {
             state.liveUsers = []
         },
         RESET_USER: (state) => {
@@ -174,6 +174,7 @@ const user = {
             try {
                 commit('RESET_USER')
                 let response = await AuthAPI.login(user.email, user.password).catch(e => { throw e })
+                console.log(response, '====user====')
                 commit('SET_TWO_FACTOR_SET', response.twoFactorSet || false)
                 return await dispatch('SetUser', response.user)
             } catch (error) {
@@ -186,7 +187,7 @@ const user = {
             try {
                 commit('RESET_USER')
                 let response = await AuthAPI.loginUsingOtp(user).catch(e => { throw e })
-                if(user.otp) {
+                if (user.otp) {
                     return await dispatch('SetUser', response.user)
                 } else {
                     return response
@@ -289,7 +290,7 @@ const user = {
                 commit('SET_PERMISSIONS', data.permissions)
                 commit('SET_PREFERENCES', data.preferences)
                 await dispatch('SetLastActivity')
-                if(!data.doNotRefetchConfig) {
+                if (!data.doNotRefetchConfig) {
                     await dispatch('config/GetConfig', null, { root: true })
                 }
                 // if(data.config) {
@@ -332,24 +333,24 @@ const user = {
         },
 
         ResetLastActivityTimer({ commit }) {
-            if(refreshConfigTimer) {
+            if (refreshConfigTimer) {
                 clearTimeout(refreshConfigTimer)
             }
-            if(activityTimer) {
+            if (activityTimer) {
                 clearTimeout(activityTimer)
                 commit('SET_LOCKED', false)
             }
         },
 
         SetLastActivity({ commit, state, dispatch, rootGetters }) {
-            function lockScreen() { 
+            function lockScreen() {
                 dispatch('Lock')
             }
 
-            function showMessage(lockIn, msg) { 
+            function showMessage(lockIn, msg) {
                 commit('SET_LOCKIN', msg)
 
-                if(activityTimer) {
+                if (activityTimer) {
                     clearTimeout(activityTimer)
                 }
 
@@ -357,7 +358,7 @@ const user = {
             }
 
             try {
-                if(activityTimer) {
+                if (activityTimer) {
                     clearTimeout(activityTimer)
                     commit('SET_LOCKED', false)
                 }
@@ -370,7 +371,7 @@ const user = {
                     .add(1, 'minutes')
                     .format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS)
 
-                if(moment().format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS) > lastActivityTimeout) {
+                if (moment().format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS) > lastActivityTimeout) {
                     // console.log('first dispatching get config call')
 
                     dispatch('config/GetConfig', null, { root: true })
@@ -383,20 +384,20 @@ const user = {
                 // console.log('Route is ', window.location.href);
 
                 const configs = rootGetters['config/configs']
-                if(configs.auth.lockScreen) {
+                if (configs.auth.lockScreen) {
                     const lockScreenTimeout = configs.auth.lockScreenTimeout
                     let showMessageIn = null
                     let lockScreenIn = null
                     let lockScreenInMsg = null
 
-                    if(lockScreenTimeout > 2) {
+                    if (lockScreenTimeout > 2) {
                         showMessageIn = (lockScreenTimeout - 1) * 60 * 1000
                         lockScreenIn = 1 * 60 * 1000
-                        lockScreenInMsg = { time: 60, unit: 'seconds'}
+                        lockScreenInMsg = { time: 60, unit: 'seconds' }
                     } else {
                         showMessageIn = ((lockScreenTimeout * 60) - 20) * 1000
                         lockScreenIn = 20 * 1000
-                        lockScreenInMsg = { time: 20, unit: 'seconds'}
+                        lockScreenInMsg = { time: 20, unit: 'seconds' }
                     }
                     activityTimer = setTimeout(() => {
                         showMessage(lockScreenIn, lockScreenInMsg)
@@ -406,7 +407,7 @@ const user = {
 
 
                 // code to refresh config after an hour
-                
+
                 // console.log('refreshConfigTimer started')
                 // if(refreshConfigTimer) {
                 //     clearTimeout(refreshConfigTimer)

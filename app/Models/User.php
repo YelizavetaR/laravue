@@ -77,7 +77,7 @@ class User extends Authenticatable
             $this->logout();
             throw ValidationException::withMessages(['message' => config('config.system.maintenance_mode_message')]);
         }
-
+        //console.log("ffffffffff");
         if ($auth_event) {
             event(new UserLogin($this));
         }
